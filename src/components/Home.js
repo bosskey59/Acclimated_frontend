@@ -31,6 +31,24 @@ const Home = (props) =>{
     return(
       <div>
       <h1>Your Email is {props.user.email}</h1>
+
+        <table>
+          <tbody>
+            <tr>
+              <th>Temperature Low |</th>
+              <th>Avg Temp |</th>
+              <th>Temperature High</th>
+            </tr>
+            <tr>
+              <td>{props.user.weather_forecast.temp_lo}</td>
+              <td>{props.user.weather_forecast.avg_temp}</td>
+              <td>{props.user.weather_forecast.temp_hi}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>{props.user.weather_forecast.percip_range}</p>
+
       <Link to="/">
         <button onClick={e=>logOut()}>Log Out</button>
       </Link>
