@@ -51,7 +51,6 @@ class LogInForm extends Component {
      .then(data => {
        if (!data.message) {
          localStorage.token = data.token;
-         this.props.currentUser(data.user);
          this.props.history.push('/home');
        } else {
          alert(data.message)

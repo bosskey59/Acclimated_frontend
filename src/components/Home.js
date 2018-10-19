@@ -2,10 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import { withRouter } from 'react-router';
 import {Link} from 'react-router-dom';
+import '../index.css';
 
-const logOut=()=>{
-  localStorage.token=""
-}
 
 const Home = (props) =>{
   console.log(props);
@@ -46,11 +44,24 @@ const Home = (props) =>{
             </tr>
           </tbody>
         </table>
+        <p>Summary:{props.user.weather_forecast.summary}</p>
+        <p>Precipatation:{props.user.weather_forecast.percip_range}</p>
+        {props.user.clothing_suggestion.item_1 == "" || props.user.clothing_suggestion.item_1 == null ? null:
+          <div className="back">
+            <p>{props.user.clothing_suggestion.item_1}</p>
+            <img src={require(`../images/${props.user.clothing_suggestion.item_1}.png`)} />
+          </div>
+        }
 
-        <p>{props.user.weather_forecast.percip_range}</p>
+          {props.user.clothing_suggestion.accessory_1 == "" || props.user.clothing_suggestion.accessory_1 == null ? null:
+            <div className="back">
+              <p>{props.user.clothing_suggestion.accessory_1}</p>
+              <img src={require(`../images/${props.user.clothing_suggestion.accessory_1}.png`)} />
+            </div>
+          }
 
       <Link to="/">
-        <button onClick={e=>logOut()}>Log Out</button>
+        <button onClick={props.logout}>Log Out</button>
       </Link>
     </div>
     )
@@ -66,7 +77,14 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return {
     currentUser: (user) => dispatch({type: "SET_USER", payload:user}),
+    logout: () => dispatch({type:"LOGOUT"})
   }
 }
 
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Home))
+
+
+// <div>
+//   <img src={require(`../images/${props.user.clothing_suggestion.item_1}.png`)} />
+//   <p>{props.user.clothing_suggestion.item_1}</p>
+// </div>
