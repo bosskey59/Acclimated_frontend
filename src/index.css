@@ -1,6 +1,14 @@
 body {
-  margin: 0;
-  padding: 0;
+  background: url('./images/background.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -15,4 +23,9 @@ code {
 
 .back{
   background-color: cyan
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
 }
