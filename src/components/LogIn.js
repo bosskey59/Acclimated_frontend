@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom';
 import { withRouter } from 'react-router';
 import '../App.css';
-import { Button, Grid, Row, Col, Form , FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Button, Grid, Row, Col, Form , FormGroup, FormControl, ControlLabel, Image } from 'react-bootstrap';
 
 
 
@@ -68,10 +68,7 @@ class LogInForm extends Component {
     return (
       <Grid className="full">
         <Row className="show-grid full">
-          <Col md={6} className="left-col">
-            <code>{'<Col md={6}  />'}</code>
-          </Col>
-          <Col  md={6} className="full pad-top">
+          <Col  md={6} mdPush={6}  className="full pad-top">
             <form onSubmit={this.logIn}>
               <FormGroup className="col-xs-5 col-md-5" controlId="email" validationState="">
                 <ControlLabel className="pull-left">Email</ControlLabel>
@@ -96,7 +93,35 @@ class LogInForm extends Component {
                 </Link>
               </div>
             </div>
-
+          </Col>
+          <Col md={6} mdPull={6} className="full pad-top">
+            <Row>
+              <Col>
+                <Image  responsive src={require(`../images/acclimatedLogo01.png`)} />
+              </Col>
+            </Row>
+            <Row className="pull-left full center">
+              <Row >
+                <Col md={2} className="vcenter pad-top-icons">
+                  <Image  responsive   src={require(`../images/tshirt_icon.png`)} />
+                </Col>
+                <Col md={10} className="vcenter pad-top-icons" >
+                  <h4>Take the guesswork out of weather apps.</h4>
+                </Col>
+                <Col md={2} className="vcenter pad-top-icons">
+                  <Image  responsive   src={require(`../images/tshirt_icon.png`)} />
+                </Col>
+                <Col md={10} className="vcenter pad-top-icons" >
+                  <h4>Get personalized reccomendations.</h4>
+                </Col>
+                <Col md={2} className="vcenter pad-top-icons">
+                  <Image  responsive   src={require(`../images/tshirt_icon.png`)} />
+                </Col>
+                <Col md={10} className="vcenter pad-top-icons" >
+                  <h4>Finally, a simpler approach to weather.</h4>
+                </Col>
+              </Row>
+            </Row>
           </Col>
         </Row>
       </Grid>
@@ -112,3 +137,6 @@ function mapDispatchToProps(dispatch){
 }
 
 export default withRouter(connect(null, mapDispatchToProps)(LogInForm))
+
+// <h4>Get personalized reccomendations.</h4>
+// <h4>Finally, a simpler approach to weather.</h4>

@@ -3,14 +3,19 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom';
 import { withRouter } from 'react-router';
 import LinkWithTooltip from './LinkWithTooltip'
-import { Button, Grid, Row, Col, Navbar, Nav, NavItem, Table, Image, FormGroup, ControlLabel, FormControl, InputGroup, Radio } from 'react-bootstrap';
+import { Button, Grid, Row, Col, Navbar, Nav, NavItem, Table, Image, FormGroup, ControlLabel, FormControl, InputGroup, Radio, Alert } from 'react-bootstrap';
 
 
 class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      temp_units: "farenheit"
+      temp_units: "farenheit",
+      email:"",
+      first_name:"",
+      password:"",
+      zip_code:"",
+      errors:[]
     };
   }
 
@@ -20,24 +25,71 @@ class SignUp extends Component {
     })
   }
 
+  validate = (name, email, password, zip) => {
+    const errors = [];
+
+    if (name.length === 0) {
+      errors.push("First Name can't be empty");
+    }
+
+    if (email.length < 5) {
+      errors.push("Email should be at least 5 charcters long");
+    }
+    if (email.split('').filter(x => x === '@').length !== 1) {
+      errors.push("Email should contain a @");
+    }
+    if (email.indexOf('.') === -1) {
+      errors.push("Email should contain at least one dot");
+    }
+
+    if (password.length < 6) {
+      errors.push("Password should be at least 6 characters long");
+    }
+
+    if (zip.length < 5) {
+      errors.push("Zip Code should be at least 5 charcters long");
+    }
+
+    return errors;
+  }
+
+  validationResults= (errors) =>{
+    if(errors.length >0){
+      return(
+        <Alert bsStyle="danger" className="col-md-12">
+          {errors.map( message => <p>{message}</p>)}
+        </Alert>
+      )
+    }else{
+      return null
+    }
+  }
+
   handleSubmit = (e) =>{
     e.preventDefault();
-    fetch("http://localhost:3000/users", {
-      method: "POST",
-      body: JSON.stringify(this.state),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(resp => resp.json())
-      .then(data => {
-        if (!data.message) {
-          localStorage.token = data.token;
-          this.props.history.push('/home');
-        } else {
-          alert(data.message)
+
+    const errors = this.validate(this.state.first_name, this.state.email, this.state.password, this.state.zip_code);
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }else{
+      fetch("http://localhost:3000/users", {
+        method: "POST",
+        body: JSON.stringify(this.state),
+        headers: {
+          "Content-Type": "application/json"
         }
+      })
+        .then(resp => resp.json())
+        .then(data => {
+          if (!data.message) {
+            localStorage.token = data.token;
+            this.props.history.push('/home');
+          } else {
+            alert(data.message)
+          }
       });
+    }
   }
 
 
@@ -62,10 +114,11 @@ class SignUp extends Component {
             <Row className="show-grid">
               <Col md={8} xs={10} mdOffset={2}  xsOffset={1} className="user-info ">
                 <div className="col-md-12 margin-bottom"><h3>Sign Up</h3>*Required fields</div>
+                {this.validationResults(this.state.errors)}
                 <form onSubmit={e=>this.handleSubmit(e)}>
                   <FormGroup className="col-md-6" validationState="">
                     <ControlLabel className="pull-left" >*First Name</ControlLabel>
-                    <FormControl type="text" name="first_name"  onChange={e=>this.handleChanges(e)} required/>
+                    <FormControl type="text" name="first_name"  onChange={e=>this.handleChanges(e)} />
                   </FormGroup>
                   <FormGroup className="col-md-6" validationState="">
                     <ControlLabel className="pull-left">Last Name</ControlLabel>
@@ -73,11 +126,11 @@ class SignUp extends Component {
                   </FormGroup>
                   <FormGroup className="col-md-6" validationState="">
                     <ControlLabel className="pull-left">*Email</ControlLabel>
-                    <FormControl type="text" name="email" onChange={e=>this.handleChanges(e)} required/>
+                    <FormControl type="text" name="email" onChange={e=>this.handleChanges(e)} />
                   </FormGroup>
                   <FormGroup className="col-md-6" validationState="">
                     <ControlLabel className="pull-left">*Password</ControlLabel>
-                    <FormControl type="password" name="password" onChange={e=>this.handleChanges(e)} required/>
+                    <FormControl type="password" name="password" onChange={e=>this.handleChanges(e)} />
                   </FormGroup>
                   <FormGroup className="col-md-6" validationState="">
                     <ControlLabel className="pull-left">*Zip Code
@@ -85,7 +138,7 @@ class SignUp extends Component {
                         <i className='glyphicon glyphicon-info-sign'></i>
                       </LinkWithTooltip>
                     </ControlLabel>
-                    <FormControl type="number" name="zip_code" onChange={e=>this.handleChanges(e)} required/>
+                    <FormControl type="number" name="zip_code" onChange={e=>this.handleChanges(e)} />
                   </FormGroup>
                   <FormGroup className="col-md-6" controlId="formControlsSelect">
                     <ControlLabel>What is your gender?
@@ -94,10 +147,10 @@ class SignUp extends Component {
                       </LinkWithTooltip>
                     </ControlLabel>
                     <FormControl name="gender" componentClass="select" placeholder="select" onChange={e=>this.handleChanges(e)}>
+                      <option value="Prefer not to say">Prefer not to say</option>
                       <option value="female">Female</option>
                       <option value="male">Male</option>
                       <option value="other">Other</option>
-                      <option value="Prefer not to say">Prefer not to say</option>
                     </FormControl>
                   </FormGroup>
                   <FormGroup className="col-md-6" validationState="">
@@ -106,7 +159,7 @@ class SignUp extends Component {
                         <i className='glyphicon glyphicon-info-sign'></i>
                       </LinkWithTooltip>
                     </ControlLabel>
-                    <FormControl type="text" placeholder="mm/dd/yyyy" name="dob" onChange={e=>this.handleChanges(e)} required/>
+                    <FormControl type="text" placeholder="mm/dd/yyyy" name="dob" onChange={e=>this.handleChanges(e)} />
                   </FormGroup>
                   <FormGroup className="col-md-6" validationState="">
                     <ControlLabel >How much do you weigh?
@@ -115,7 +168,7 @@ class SignUp extends Component {
                       </LinkWithTooltip>
                     </ControlLabel>
                       <InputGroup>
-                        <FormControl type="number" name="weight" onChange={e=>this.handleChanges(e)} required/>
+                        <FormControl type="number" name="weight" onChange={e=>this.handleChanges(e)} />
                         <InputGroup.Addon>lbs</InputGroup.Addon>
                       </InputGroup>
                   </FormGroup>
@@ -137,7 +190,7 @@ class SignUp extends Component {
                   </FormGroup>
                   <FormGroup className="col-md-4" validationState="">
                     <InputGroup>
-                      <FormControl type="number" name="desired_temp" onChange={e=>this.handleChanges(e)} required/>
+                      <FormControl type="number" name="desired_temp" onChange={e=>this.handleChanges(e)} />
                       <InputGroup.Addon>°F</InputGroup.Addon>
                     </InputGroup>
                   </FormGroup>
